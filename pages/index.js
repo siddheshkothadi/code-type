@@ -22,14 +22,6 @@ export default function Home() {
           }
         }
         setWords(fiftyWords.join(" "));
-
-        // set top 25 words
-        // setWords(
-        //   data.words
-        //     .slice(0, 25)
-        //     .map((word) => word.word)
-        //     .join(" ")
-        // );
       });
   }, []);
 
@@ -39,8 +31,13 @@ export default function Home() {
 
   return (
     <div className="bg-drBackground flex justify-center min-h-screen min-w-screen">
-      <div className="max-w-7xl w-screen h-screen flex p-6 items-center justify-center">
-        <div className="flex flex-wrap">
+      <div className="max-w-7xl w-screen h-screen flex p-6 items-center justify-center flex-wrap flex-col">
+        <div
+          className="flex flex-wrap noSelect"
+          onClick={() => {
+            window.document.getElementById("type-box").focus();
+          }}
+        >
           {words.split(" ").map((word, index) => {
             return (
               <Word
@@ -53,7 +50,8 @@ export default function Home() {
           })}
         </div>
         <input
-          type="text"
+          id="type-box"
+          className="bg-transparent text-transparent outline-none"
           onChange={(e) => setTypedWords(e.target.value)}
           value={typedWords}
           autoFocus

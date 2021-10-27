@@ -22,16 +22,44 @@ code {
 }
 
 @layer utilities {
+  .noSelect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+  }
+
+  .blinkLeft {
+    animation: blinkLeft 1s infinite;
+  }
+
+  .blinkRight {
+    animation: blinkRight 1s infinite;
+  }
 }
 
-@keyframes blink {
+@keyframes blinkLeft {
   0% {
-    opacity: 0;
+    border-left-color: rgba(256, 256, 256, 0);
   }
   50% {
-    opacity: 1;
+    border-left-color: rgba(256, 256, 256, 0.5);
   }
   100% {
-    opacity: 0;
+    border-left-color: rgba(256, 256, 256, 0);
+  }
+}
+
+@keyframes blinkRight {
+  0% {
+    border-right-color: rgba(256, 256, 256, 0);
+  }
+  50% {
+    border-right-color: rgba(256, 256, 256, 0.5);
+  }
+  100% {
+    border-right-color: rgba(256, 256, 256, 0);
   }
 }

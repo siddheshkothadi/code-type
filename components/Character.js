@@ -5,7 +5,11 @@ function Character(props) {
 
   return (
     <span
-      className="font-bold text-2xl sm:text-3xl md:text-4xl bor border-transparent"
+      className={
+        "font-bold text-2xl sm:text-3xl md:text-4xl " +
+        (isLastTypedCharacter ? "blinkRight " : "") +
+        (isStartOfNewWord ? "blinkLeft " : "")
+      }
       style={{
         color: color,
         ...(isLastTypedCharacter && {
