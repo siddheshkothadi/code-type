@@ -6,7 +6,7 @@ function Character(props) {
   return (
     <span
       className={
-        "font-bold text-2xl sm:text-3xl md:text-4xl " +
+        "font-bold text-xl sm:text-3xl md:text-3xl inline-block " +
         (isLastTypedCharacter ? "blinkRight " : "") +
         (isStartOfNewWord ? "blinkLeft " : "")
       }

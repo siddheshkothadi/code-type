@@ -1,6 +1,5 @@
 import Head from "next/head";
 import React from "react";
-import Character from "../components/Character";
 import Word from "../components/Word";
 
 export default function Home() {
@@ -9,33 +8,54 @@ export default function Home() {
 
   const [chosenLanguage, setChosenLanguage] = React.useState("js");
   const [toggle, setToggle] = React.useState(false);
-  const [isFocussed, setIsFocussed] = React.useState(false);
-  const [timer, setTimer] = React.useState(0);
-  const [intervalState, setIntervalState] = React.useState(null);
+  const [seconds, setSeconds] = React.useState(0);
+  const [typingStarted, setTypingStarted] = React.useState(false);
 
-  const startTimer = () => {
-    setTimer(0);
-    const interval = setInterval(() => {
-      setTimer((timer) => timer + 1);
-    }, 1000);
+  const [prevAccuracy, setPrevAccuracy] = React.useState(null);
+  const [prevWPM, setPrevWPM] = React.useState(null);
+
+  const calculateWPM = () => {
+    const wordsPerMinute = words.split(" ").length / (seconds / 60);
+    return wordsPerMinute;
   };
 
-  const stopTimer = () => {
-    clearInterval(intervalState);
-    setIntervalState(null);
-    setTimer(0);
+  const calculateAccuracy = (typedSentence) => {
+    const typedWordsArray = typedSentence.split(" ");
+    const wordsArray = words.split(" ");
+    let correctCharacters = 0;
+    let totalCharacters = 0;
+    wordsArray.forEach((word, index) => {
+      const charactersInTypedWords = typedWordsArray[index].split("");
+      const charactersInWords = word.split("");
+      charactersInWords.forEach((character, index) => {
+        totalCharacters++;
+        if (charactersInTypedWords[index] === character) {
+          correctCharacters++;
+        }
+      });
+    });
+    const accuracy = correctCharacters / totalCharacters;
+    return accuracy;
+  };
+
+  const typingFinished = (typedSentence) => {
+    // calculate accuracy
+    const accuracy = calculateAccuracy(typedSentence);
+    // calculate wpm
+    const wpm = calculateWPM();
+    console.log(accuracy, wpm);
+    setPrevAccuracy(accuracy.toFixed(2));
+    setPrevWPM(wpm.toFixed(2));
+    // set state
+    setTypingStarted(false);
+    setSeconds(0);
+    setTypedWords("");
+    setToggle(!toggle);
+    window.document.getElementById("type-box").focus();
   };
 
   React.useEffect(() => {
-    window.document.getElementById("type-box")?.addEventListener("blur", () => {
-      setIsFocussed(false);
-    });
-    window.document
-      .getElementById("type-box")
-      ?.addEventListener("focus", () => {
-        setIsFocussed(true);
-      });
-    const res = fetch(
+    fetch(
       `https://siddheshkothadi.github.io/APIData/language-keywords/${chosenLanguage}.json`
     )
       .then((res) => res.json())
@@ -57,25 +77,38 @@ export default function Home() {
   }, [toggle]);
 
   React.useEffect(() => {
-    if (typedWords.length == 1) {
-      startTimer();
-    } else if (typedWords.split(" ").length > 25) {
-      stopTimer();
-    }
-  }, [typedWords]);
+    let interval = null;
 
-  React.useEffect(() => {
-    console.log("focus state", isFocussed);
-  }, [isFocussed]);
+    if (typingStarted === true) {
+      interval = setInterval(() => {
+        setSeconds((seconds) => seconds + 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  }, [typingStarted]);
 
   if (words.length === 0) {
-    return <div>Loading...</div>;
+    return (
+      <div className="bg-drBackground flex justify-center items-center min-h-screen min-w-screen">
+        <div className="text-drForeGround my-2 text-lg">Loading</div>
+      </div>
+    );
   }
 
   return (
-    <div className="bg-drBackground flex justify-center min-h-screen min-w-screen">
-      <div className="max-w-7xl w-screen h-screen flex p-6 items-center justify-center flex-wrap flex-col">
-        <p className="text-drForeGround my-2 text-lg">{timer}</p>
+    <div className="bg-drBackground flex justify-center min-h-screen min-w-screen overflow-scroll md:overflow-hidden">
+      <Head></Head>
+      <div className="max-w-7xl w-screen h-screen flex p-6 items-center justify-around flex-col">
+        <div className="flex flex-col justify-around items-center w-full">
+          <p className="text-drPink my-1 text-2xl">{seconds}</p>
+          <p className="text-drPurple my-1 mb-4 text-2xl">
+            {`${typedWords.split(" ").length - 1}/${words.split(" ").length}`}
+          </p>
+        </div>
         <div
           className="flex flex-wrap noSelect"
           onClick={() => {
@@ -95,22 +128,48 @@ export default function Home() {
         </div>
         <input
           id="type-box"
-          className="bg-transparent text-transparent outline-none"
-          onChange={(e) => setTypedWords(e.target.value)}
+          className="bg-transparent text-transparent outline-none fixed"
+          style={{
+            top: "-100px",
+          }}
+          onChange={(e) => {
+            if (typingStarted === false && e.target.value.length > 0) {
+              setTypingStarted(true);
+            }
+            setTypedWords(e.target.value);
+            if (
+              e.target.value.split(" ").length > words.split(" ").length ||
+              (e.target.value.split(" ").length === words.split(" ").length &&
+                e.target.value.split(" ")[e.target.value.split(" ").length - 1]
+                  .length ===
+                  words.split(" ")[words.split(" ").length - 1].length)
+            ) {
+              typingFinished(e.target.value);
+            }
+          }}
           value={typedWords}
           autoFocus
         />
-        <button
-          className="text-drForeGround"
-          onClick={() => {
-            stopTimer();
-            setTypedWords("");
-            setToggle(!toggle);
-            window.document.getElementById("type-box").focus();
-          }}
-        >
-          Refresh
-        </button>
+        <div className="flex items-center justify-around w-full">
+          {prevAccuracy !== null && (
+            <p className="text-drGreen my-1 text-lg">
+              {`Accuracy: ${prevAccuracy * 100}%`}
+            </p>
+          )}
+          <button
+            className="text-drYellow text-xl hover:bg-black p-4 rounded-xl"
+            onClick={() => {
+              setTypedWords("");
+              setToggle(!toggle);
+              window.document.getElementById("type-box").focus();
+            }}
+          >
+            Refresh
+          </button>
+          {prevWPM !== null && (
+            <p className="text-drOrange my-1 text-lg">{`WPM: ${prevWPM}`}</p>
+          )}
+        </div>
       </div>
     </div>
   );
