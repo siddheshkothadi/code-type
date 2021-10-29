@@ -6,19 +6,20 @@ function Character(props) {
   return (
     <span
       className={
-        "font-bold text-xl sm:text-3xl md:text-3xl inline-block " +
+        "font-base text-xl sm:text-2xl xl:text-2xl inline-block " +
         (isLastTypedCharacter ? "blinkRight " : "") +
         (isStartOfNewWord ? "blinkLeft " : "")
       }
       style={{
         color: color,
+        lineHeight: "1.5",
         ...(isLastTypedCharacter && {
-          borderRight: `2px solid ${color}`,
-          marginRight: "-2px",
+          borderRight: `3px solid ${color}`,
+          marginRight: "-3px",
         }),
         ...(isStartOfNewWord && {
-          borderLeft: `2px solid ${color}`,
-          marginLeft: "-2px",
+          borderLeft: `3px solid ${color}`,
+          marginLeft: "-3px",
         }),
       }}
     >

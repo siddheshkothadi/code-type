@@ -17,6 +17,14 @@ module.exports = {
         drPurple: "#bd93f9",
         drRed: "#ff5555",
         drYellow: "#f1fa8c",
+
+        // 80s after dark
+        adBgColor: "#1b1d36",
+        adMainColor: "#fca6d1",
+        adCaretColor: "#99d6ea",
+        adSubColor: "#99d6ea",
+        adTextColor: "#fca6d1",
+        adErrorColor: "#fffb85",
       },
     },
   },

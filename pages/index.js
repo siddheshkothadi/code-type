@@ -2,17 +2,59 @@ import Head from "next/head";
 import React from "react";
 import Word from "../components/Word";
 
+const languages = [
+  "js",
+  "jsx",
+  "html",
+  "css",
+  "java",
+  "py",
+  "lua",
+  "php",
+  "rb",
+  "cpp",
+  "pl",
+  "cs",
+  "scala",
+  "go",
+  "sql",
+  "rs",
+  "lisp",
+  "clj",
+  "kt",
+  "cmake",
+  "swift",
+  "hs",
+  "ex",
+  "objc",
+  "fs",
+  "elm",
+  "purs",
+  "pas",
+  "r",
+  "erl",
+  "vim",
+  "groovy",
+];
+
 export default function Home() {
   const [words, setWords] = React.useState("");
   const [typedWords, setTypedWords] = React.useState("");
 
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+
   const [chosenLanguage, setChosenLanguage] = React.useState("js");
+
+  // const [chosenFont, setChosenFont] = React.useState("monospace");
+
   const [toggle, setToggle] = React.useState(false);
   const [seconds, setSeconds] = React.useState(0);
   const [typingStarted, setTypingStarted] = React.useState(false);
 
   const [prevAccuracy, setPrevAccuracy] = React.useState(null);
   const [prevWPM, setPrevWPM] = React.useState(null);
+
+  const dropdownRef = React.useRef(null);
 
   const calculateWPM = () => {
     const wordsPerMinute = words.split(" ").length / (seconds / 60);
@@ -74,7 +116,7 @@ export default function Home() {
     return () => {
       // remove event listeners
     };
-  }, [toggle]);
+  }, [toggle, chosenLanguage]);
 
   React.useEffect(() => {
     let interval = null;
@@ -93,24 +135,60 @@ export default function Home() {
 
   if (words.length === 0) {
     return (
-      <div className="bg-drBackground flex justify-center items-center min-h-screen min-w-screen">
+      <div className="bgColor flex justify-center items-center min-h-screen min-w-screen">
         <div className="text-drForeGround my-2 text-lg">Loading</div>
       </div>
     );
   }
 
   return (
-    <div className="bg-drBackground flex justify-center min-h-screen min-w-screen overflow-scroll md:overflow-hidden">
+    <div className="bgColor flex justify-center min-h-screen min-w-screen overflow-scroll md:overflow-hidden">
       <Head></Head>
       <div className="max-w-7xl w-screen h-screen flex p-6 items-center justify-around flex-col">
-        <div className="flex flex-col justify-around items-center w-full">
-          <p className="text-drPink my-1 text-2xl">{seconds}</p>
-          <p className="text-drPurple my-1 mb-4 text-2xl">
+        <div className="flex md:flex-row justify-between items-center w-full flex-wrap max-w-5xl px-4">
+          {/* <p className=" text-adSubColor my-1 text-sm md:text-lg">{seconds}</p> */}
+          <p className="text-adSubColor my-1 mb-4 text-sm md:text-lg">
             {`${typedWords.split(" ").length - 1}/${words.split(" ").length}`}
           </p>
+          <div className="relative text-adMainColor text-lg cursor-pointer font-bold">
+            <p onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+              {chosenLanguage}
+            </p>
+            {isDropdownOpen && (
+              <div
+                ref={dropdownRef}
+                className="absolute top-8 bg-drComment rounded-md overflow-y-scroll h-40 containerWithoutScrollbar"
+                style={{
+                  right: "-17px",
+                  boxSizing:
+                    "content-box" /* So the width will be 100% + 17px */,
+                }}
+              >
+                {languages.map((language) => (
+                  <p
+                    key={language}
+                    className={`text-adMainColor text-sm cursor-pointer font-bold hover:bg-adBgColor px-8 ${
+                      chosenLanguage === language
+                        ? "text-drForeGround"
+                        : "text-adSubColor"
+                    }`}
+                    onClick={() => {
+                      setWords("");
+                      setTypedWords("");
+
+                      setChosenLanguage(language);
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    {language}
+                  </p>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <div
-          className="flex flex-wrap noSelect"
+          className="flex flex-wrap noSelect sm:px-4 max-w-5xl"
           onClick={() => {
             window.document.getElementById("type-box").focus();
           }}
@@ -150,14 +228,14 @@ export default function Home() {
           value={typedWords}
           autoFocus
         />
-        <div className="flex items-center justify-around w-full">
+        <div className="flex items-center justify-evenly w-full flex-col sm:flex-row  max-w-5xl">
           {prevAccuracy !== null && (
-            <p className="text-drGreen my-1 text-lg">
-              {`Accuracy: ${prevAccuracy * 100}%`}
+            <p className="text-adSubColor my-1 text-sm md:text-lg font-bold">
+              {`acc: ${prevAccuracy * 100}%`}
             </p>
           )}
           <button
-            className="text-drYellow text-xl hover:bg-black p-4 rounded-xl"
+            className="text-adMainColor font-bold text-sm md:text-lg hover:bg-adSubColor focus:bg-adSubColor hover:text-adBgColor focus:text-adBgColor outline-none px-3 py-2 rounded-xl"
             onClick={() => {
               setTypedWords("");
               setToggle(!toggle);
@@ -167,7 +245,7 @@ export default function Home() {
             Refresh
           </button>
           {prevWPM !== null && (
-            <p className="text-drOrange my-1 text-lg">{`WPM: ${prevWPM}`}</p>
+            <p className="text-adSubColor my-1 text-sm md:text-lg font-bold">{`wpm: ${prevWPM}`}</p>
           )}
         </div>
       </div>

@@ -4,12 +4,12 @@ import Character from "./Character";
 function getColor(index, wordTyped, actualWord) {
   if (index < wordTyped.length && index < actualWord.length) {
     if (wordTyped[index] === actualWord[index]) {
-      return "white";
+      return "#fca6d1";
     }
   } else if (index < actualWord.length && index >= wordTyped.length) {
-    return "gray";
+    return "#99d6ea";
   }
-  return "red";
+  return "#fffb85";
 }
 
 function Word(props) {
@@ -19,7 +19,7 @@ function Word(props) {
     return (
       <div className="mr-2">
         {actualWord.split("").map((char, index) => {
-          return <Character key={index} char={char} color={"gray"} />;
+          return <Character key={index} char={char} color={"#99d6ea"} />;
         })}
       </div>
     );
