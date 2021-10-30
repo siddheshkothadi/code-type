@@ -1,0 +1,38 @@
+const languages = [
+  "js",
+  "jsx",
+  "html",
+  "css",
+  "java",
+  "py",
+  "lua",
+  "php",
+  "rb",
+  "cpp",
+  "pl",
+  "cs",
+  "scala",
+  "go",
+  "sql",
+  "rs",
+  "lisp",
+  "clj",
+  "kt",
+  "cmake",
+  "swift",
+  "hs",
+  "ex",
+  "objc",
+  "fs",
+  "elm",
+  "purs",
+  "pas",
+  "r",
+  "erl",
+  "vim",
+  "groovy",
+];
+
+const wordLengths = [10, 25, 60];
+
+export { languages, wordLengths };

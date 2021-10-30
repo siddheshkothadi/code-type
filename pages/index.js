@@ -3,43 +3,10 @@ import React from "react";
 import Word from "../components/Word";
 import useClickOutside from "../hooks/useClickOutside";
 import useTimer from "../hooks/useTimer";
-
-const languages = [
-  "js",
-  "jsx",
-  "html",
-  "css",
-  "java",
-  "py",
-  "lua",
-  "php",
-  "rb",
-  "cpp",
-  "pl",
-  "cs",
-  "scala",
-  "go",
-  "sql",
-  "rs",
-  "lisp",
-  "clj",
-  "kt",
-  "cmake",
-  "swift",
-  "hs",
-  "ex",
-  "objc",
-  "fs",
-  "elm",
-  "purs",
-  "pas",
-  "r",
-  "erl",
-  "vim",
-  "groovy",
-];
+import { languages, wordLengths } from "../staticData";
 
 export default function Home() {
+  const [wordLength, setWordLength] = React.useState(10);
   const [words, setWords] = React.useState("");
   const [typedWords, setTypedWords] = React.useState("");
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
@@ -104,17 +71,18 @@ export default function Home() {
     )
       .then((res) => res.json())
       .then((data) => {
-        let fiftyWords = [];
+        let selectedWords = [];
 
-        while (fiftyWords.length < 25) {
+        while (selectedWords.length < wordLength) {
           let random = Math.floor(Math.random() * data.words.length);
-          if (!fiftyWords.includes(data.words[random])) {
-            fiftyWords.push(data.words[random].word);
+          if (!selectedWords.includes(data.words[random])) {
+            selectedWords.push(data.words[random].word);
           }
         }
-        setWords(fiftyWords.join(" "));
+        setWords(selectedWords.join(" "));
+        window.document.getElementById("type-box").focus();
       });
-  }, [toggle, chosenLanguage]);
+  }, [toggle, chosenLanguage, wordLength]);
 
   if (words.length === 0) {
     return (
@@ -133,6 +101,20 @@ export default function Home() {
           <p className="text-adSubColor my-1 mb-4 text-sm md:text-lg">
             {`${typedWords.split(" ").length - 1}/${words.split(" ").length}`}
           </p>
+          <div className="flex flex-row hidden sm:inline-flex">
+            {wordLengths.map((length) => (
+              <div
+                className={`${
+                  length === wordLength ? "text-adMainColor" : "text-adSubColor"
+                } 
+                text-sm md:text-lg mx-2 my-1 cursor-pointer`}
+                onClick={() => setWordLength(length)}
+                key={length}
+              >
+                {length}
+              </div>
+            ))}
+          </div>
           <div className="relative text-adMainColor text-lg cursor-pointer font-bold">
             <p onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
               {chosenLanguage}
