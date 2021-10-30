@@ -43,9 +43,11 @@ Practice code-typing with top 1000 keywords of the most popular programming lang
 
 ### Preview and Screenshots
 
-<img src="https://github.com/siddheshkothadi/code-type/blob/screenshots/dropdown.png" />
-<img src="https://github.com/siddheshkothadi/code-type/blob/screenshots/mobile-view.png" />
-![image](https://user-images.githubusercontent.com/55179845/139529712-02d7a6e3-44f1-4f57-96cf-ac01846ac9ec.png)
+<p float="left" align="middle">
+  <img src="https://github.com/siddheshkothadi/code-type/blob/screenshots/dropdown.png" width="100%" />
+  <img src="https://github.com/siddheshkothadi/code-type/blob/screenshots/mobile-view.png" width="20%" />
+  <img src="https://user-images.githubusercontent.com/55179845/139529712-02d7a6e3-44f1-4f57-96cf-ac01846ac9ec.png" width="75%" />
+</p>
 
 
 ### References
