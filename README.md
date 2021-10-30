@@ -2,7 +2,7 @@
 
 ### Typing practice for programmers
 
-A web app to help you practice code-typing with top 1000 keywords of the most popular programming languages.
+Practice code-typing with top 1000 keywords of the most popular programming languages.
 
 <img src="https://github.com/siddheshkothadi/code-type/blob/screenshots/code-type.png"/>
 
@@ -40,3 +40,6 @@ A web app to help you practice code-typing with top 1000 keywords of the most po
 - Erlang - <code>.erl</code>
 - VimL - <code>.vim</code>
 - Groovy - <code>.groovy</code>
+
+### References
+- <a href="https://github.com/siddheshkothadi/APIData">Data Source</a>
