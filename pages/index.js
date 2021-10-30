@@ -2,6 +2,7 @@ import Head from "next/head";
 import React from "react";
 import Word from "../components/Word";
 import useClickOutside from "../hooks/useClickOutside";
+import useTimer from "../hooks/useTimer";
 
 const languages = [
   "js",
@@ -41,24 +42,23 @@ const languages = [
 export default function Home() {
   const [words, setWords] = React.useState("");
   const [typedWords, setTypedWords] = React.useState("");
-
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
-
   const [chosenLanguage, setChosenLanguage] = React.useState("js");
-
-  // const [chosenFont, setChosenFont] = React.useState("monospace");
-
   const [toggle, setToggle] = React.useState(false);
-  const [seconds, setSeconds] = React.useState(0);
   const [typingStarted, setTypingStarted] = React.useState(false);
-
+  const [seconds, setSeconds] = useTimer(0, typingStarted);
   const [prevAccuracy, setPrevAccuracy] = React.useState(null);
   const [prevWPM, setPrevWPM] = React.useState(null);
 
   const dropdownRef = React.useRef(null);
+  useClickOutside(dropdownRef, function handleClickOutside(event) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
+    }
+  });
 
   const calculateWPM = () => {
-    const wordsPerMinute = words.split(" ").length / (seconds / 60);
+    const wordsPerMinute = (words.split(" ").length / seconds) * 60;
     return wordsPerMinute;
   };
 
@@ -76,20 +76,21 @@ export default function Home() {
           correctCharacters++;
         }
       });
+      if (charactersInTypedWords.length > charactersInWords.length) {
+        totalCharacters +=
+          charactersInTypedWords.length - charactersInWords.length;
+      }
     });
     const accuracy = correctCharacters / totalCharacters;
     return accuracy;
   };
 
   const typingFinished = (typedSentence) => {
-    // calculate accuracy
     const accuracy = calculateAccuracy(typedSentence);
-    // calculate wpm
     const wpm = calculateWPM();
     console.log(accuracy, wpm);
     setPrevAccuracy(accuracy.toFixed(2));
     setPrevWPM(wpm.toFixed(2));
-    // set state
     setTypingStarted(false);
     setSeconds(0);
     setTypedWords("");
@@ -113,32 +114,7 @@ export default function Home() {
         }
         setWords(fiftyWords.join(" "));
       });
-
-    return () => {
-      // remove event listeners
-    };
   }, [toggle, chosenLanguage]);
-
-  React.useEffect(() => {
-    let interval = null;
-
-    if (typingStarted === true) {
-      interval = setInterval(() => {
-        setSeconds((seconds) => seconds + 1);
-      }, 1000);
-    } else {
-      clearInterval(interval);
-    }
-    return () => {
-      clearInterval(interval);
-    };
-  }, [typingStarted]);
-
-  useClickOutside(dropdownRef, function handleClickOutside(event) {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsDropdownOpen(false);
-    }
-  });
 
   if (words.length === 0) {
     return (
@@ -167,8 +143,7 @@ export default function Home() {
                 className="absolute top-8 bg-drComment rounded-md overflow-y-scroll h-40 containerWithoutScrollbar"
                 style={{
                   right: "-17px",
-                  boxSizing:
-                    "content-box" /* So the width will be 100% + 17px */,
+                  boxSizing: "content-box",
                 }}
               >
                 {languages.map((language) => (
