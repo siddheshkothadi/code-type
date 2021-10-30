@@ -1,6 +1,7 @@
 import Head from "next/head";
 import React from "react";
 import Word from "../components/Word";
+import useClickOutside from "../hooks/useClickOutside";
 
 const languages = [
   "js",
@@ -133,18 +134,11 @@ export default function Home() {
     };
   }, [typingStarted]);
 
-  React.useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
+  useClickOutside(dropdownRef, function handleClickOutside(event) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
     }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownRef]);
+  });
 
   if (words.length === 0) {
     return (
