@@ -2,6 +2,7 @@ import Head from "next/head";
 import React from "react";
 import Word from "../components/Word";
 import useClickOutside from "../hooks/useClickOutside";
+import useLocalStorage from "../hooks/useLocalStorage";
 import useTimer from "../hooks/useTimer";
 import { languages, wordLengths } from "../staticData";
 
@@ -10,12 +11,13 @@ export default function Home() {
   const [words, setWords] = React.useState("");
   const [typedWords, setTypedWords] = React.useState("");
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
-  const [chosenLanguage, setChosenLanguage] = React.useState("js");
+  const [chosenLanguage, setChosenLanguage] = useLocalStorage("language", "js");
   const [toggle, setToggle] = React.useState(false);
   const [typingStarted, setTypingStarted] = React.useState(false);
   const [seconds, setSeconds] = useTimer(0, typingStarted);
-  const [prevAccuracy, setPrevAccuracy] = React.useState(null);
-  const [prevWPM, setPrevWPM] = React.useState(null);
+  const [prevAccuracy, setPrevAccuracy] = useLocalStorage("accuracy", null);
+  const [prevWPM, setPrevWPM] = useLocalStorage("wpm", null);
+  const [isInputFocused, setIsInputFocused] = React.useState(true);
 
   const dropdownRef = React.useRef(null);
   useClickOutside(dropdownRef, function handleClickOutside(event) {
@@ -24,9 +26,24 @@ export default function Home() {
     }
   });
 
+  const typingAreaRef = React.useRef(null);
+  useClickOutside(typingAreaRef, function handleClickOutside(event) {
+    if (
+      typingAreaRef.current &&
+      !typingAreaRef.current.contains(event.target)
+    ) {
+      setIsInputFocused(false);
+    }
+  });
+
   const calculateWPM = () => {
-    const wordsPerMinute = (words.split(" ").length / seconds) * 60;
-    return wordsPerMinute;
+    const wordsPerMinute =
+      (typedWords.split(" ").filter((word) => {
+        return word.length > 0;
+      }).length /
+        seconds) *
+      60;
+    return wordsPerMinute.toFixed(2);
   };
 
   const calculateAccuracy = (typedSentence) => {
@@ -49,23 +66,24 @@ export default function Home() {
       }
     });
     const accuracy = correctCharacters / totalCharacters;
-    return accuracy;
+    return accuracy.toFixed(2);
   };
 
   const typingFinished = (typedSentence) => {
     const accuracy = calculateAccuracy(typedSentence);
     const wpm = calculateWPM();
-    console.log(accuracy, wpm);
-    setPrevAccuracy(accuracy.toFixed(2));
-    setPrevWPM(wpm.toFixed(2));
+    localStorage.setItem("accuracy", accuracy);
+    localStorage.setItem("wpm", wpm);
+    setPrevAccuracy(accuracy);
+    setPrevWPM(wpm);
     setTypingStarted(false);
     setSeconds(0);
     setTypedWords("");
     setToggle(!toggle);
-    window.document.getElementById("type-box").focus();
   };
 
   React.useEffect(() => {
+    localStorage.setItem("language", chosenLanguage);
     fetch(
       `https://siddheshkothadi.github.io/APIData/language-keywords/${chosenLanguage}.json`
     )
@@ -81,6 +99,10 @@ export default function Home() {
         }
         setWords(selectedWords.join(" "));
         window.document.getElementById("type-box").focus();
+        setIsInputFocused(true);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }, [toggle, chosenLanguage, wordLength]);
 
@@ -97,25 +119,37 @@ export default function Home() {
       <Head></Head>
       <div className="max-w-7xl w-screen h-screen flex p-6 items-center justify-around flex-col">
         <div className="flex md:flex-row justify-between items-center w-full flex-wrap max-w-5xl px-4">
-          {/* <p className=" text-adSubColor my-1 text-sm md:text-lg">{seconds}</p> */}
-          <p className="text-adSubColor my-1 mb-4 text-sm md:text-lg">
-            {`${typedWords.split(" ").length - 1}/${words.split(" ").length}`}
-          </p>
-          <div className="flex flex-row hidden sm:inline-flex">
-            {wordLengths.map((length) => (
-              <div
-                className={`${
-                  length === wordLength ? "text-adMainColor" : "text-adSubColor"
-                } 
-                text-sm md:text-lg mx-2 my-1 cursor-pointer`}
-                onClick={() => setWordLength(length)}
-                key={length}
-              >
-                {length}
-              </div>
-            ))}
+          <div className="flex flex-col">
+            <div className="flex-row inline-flex">
+              <p className="text-adSubColor my-1 mb-4 text-sm md:text-lg">
+                {`${typedWords.split(" ").length - 1}/${
+                  words.split(" ").length
+                }`}
+              </p>
+              <p className=" text-adMainColor my-1 text-sm md:text-lg ml-8">
+                {seconds}
+              </p>
+            </div>
+            <div className="flex-row hidden sm:inline-flex">
+              {wordLengths.map((length, index) => (
+                <div
+                  className={`${
+                    length === wordLength
+                      ? "text-adMainColor"
+                      : "text-adSubColor"
+                  } 
+                text-sm md:text-lg mx-2 ${
+                  index == 0 ? "ml-0" : ""
+                } my-1 cursor-pointer`}
+                  onClick={() => setWordLength(length)}
+                  key={length}
+                >
+                  {length}
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="relative text-adMainColor text-lg cursor-pointer font-bold">
+          <div className="relative text-adMainColor text-lg cursor-pointer font-bold z-40">
             <p onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
               {chosenLanguage}
             </p>
@@ -139,7 +173,6 @@ export default function Home() {
                     onClick={() => {
                       setWords("");
                       setTypedWords("");
-
                       setChosenLanguage(language);
                       setIsDropdownOpen(false);
                     }}
@@ -152,9 +185,11 @@ export default function Home() {
           </div>
         </div>
         <div
-          className="flex flex-wrap noSelect sm:px-4 max-w-5xl"
+          ref={typingAreaRef}
+          className="flex relative flex-wrap noSelect px-4 sm:px-4 max-w-5xl py-6"
           onClick={() => {
             window.document.getElementById("type-box").focus();
+            setIsInputFocused(true);
           }}
         >
           {words.split(" ").map((word, index) => {
@@ -167,6 +202,13 @@ export default function Home() {
               />
             );
           })}
+          {!isInputFocused && (
+            <div className="absolute left-0 top-0 right-0 bottom-0 flex justify-center items-center bg-opacity-95 cursor-pointer noSelect p-10 backdrop-filter backdrop-blur">
+              <p className="text-adMainColor text-lg font-bold my-10">
+                Click or tap to focus
+              </p>
+            </div>
+          )}
         </div>
         <input
           id="type-box"
@@ -203,7 +245,6 @@ export default function Home() {
             onClick={() => {
               setTypedWords("");
               setToggle(!toggle);
-              window.document.getElementById("type-box").focus();
             }}
           >
             Refresh
