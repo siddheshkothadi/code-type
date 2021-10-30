@@ -116,7 +116,25 @@ export default function Home() {
 
   return (
     <div className="bgColor flex justify-center min-h-screen min-w-screen overflow-scroll md:overflow-hidden">
-      <Head></Head>
+      <Head>
+        <title>CodeType</title>
+        <meta property="og:title" content="CodeType" key="title" />
+        <meta
+          name="description"
+          content="Typing practice for programmers. Practice code-typing with top 1000 keywords of the most popular programming languages."
+        />
+        <meta
+          property="og:description"
+          content="Typing practice for programmers
+          Practice code-typing with top 1000 keywords of the most popular programming languages."
+          key="description"
+        />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1"
+        ></meta>
+        <link rel="icon" href="/CodeType.png" />
+      </Head>
       <div className="max-w-7xl w-screen h-screen flex p-6 items-center justify-around flex-col">
         <div className="flex md:flex-row justify-between items-center w-full flex-wrap max-w-5xl px-4">
           <div className="flex flex-col">
