@@ -4,7 +4,7 @@
 
 Practice code-typing with top 1000 keywords of the most popular programming languages.
 
-<img src="https://github.com/siddheshkothadi/code-type/blob/screenshots/code-type.png"/>
+<img src="https://github.com/siddheshkothadi/code-type/blob/screenshots/with-selector.png"/>
 
 ### Supported Languages
 
@@ -42,4 +42,5 @@ Practice code-typing with top 1000 keywords of the most popular programming lang
 - Groovy - <code>.groovy</code>
 
 ### References
+
 - <a href="https://github.com/siddheshkothadi/APIData">Data Source</a>
