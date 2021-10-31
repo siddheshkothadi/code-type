@@ -262,6 +262,8 @@ export default function Home() {
             className="text-adMainColor font-bold text-sm md:text-lg hover:bg-adSubColor focus:bg-adSubColor hover:text-adBgColor focus:text-adBgColor outline-none px-3 py-2 rounded-xl"
             onClick={() => {
               setTypedWords("");
+              setSeconds(0);
+              setTypingStarted(false);
               setToggle(!toggle);
             }}
           >
