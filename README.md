@@ -6,6 +6,24 @@ Practice code-typing with top 1000 keywords of the most popular programming lang
 
 <img src="https://github.com/siddheshkothadi/code-type/blob/screenshots/with-selector.png"/>
 
+### Getting Started
+
+These instructions will help you to set up the app on your local machine for development
+
+#### Prerequisites
+
+- <a href="https://nodejs.dev/">Node</a> with npm
+
+#### Setting Up
+
+<ul>
+  <li>Clone the repository with the command <code>git clone https://github.com/siddheshkothadi/code-type.git</code></li>
+  <li>Enter the cloned repository by running the command <code>cd code-type</code></li>
+  <li>Install the dependencies with the command <code>npm install</code></li>
+  <li>Run the app with the command <code>npm run dev</code>. The app will run on port 3000 by default.</li>
+  <li>Open <code>http://localhost:3000</code> on your browser to view the app.</li>
+</ul>
+
 ### Supported Languages
 
 - Javascript - <code>.js</code>
