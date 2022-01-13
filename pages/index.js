@@ -109,9 +109,8 @@ export default function Home() {
   if (words.length === 0) {
     return (
       <div className="bgColor flex justify-center items-center min-h-screen min-w-screen">
-        {/* <div className="text-drForeGround my-2 text-lg">Loading</div> */}
         <div id="preloader">
-        <div id="loader"></div>
+          <div id="loader"></div>
         </div>
       </div>
     );

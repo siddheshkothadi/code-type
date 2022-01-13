@@ -118,6 +118,7 @@ code {
   width: 100%;
   height: 100%;
 }
+
 #loader {
   display: block;
   position: relative;
@@ -128,10 +129,11 @@ code {
   margin: -75px 0 0 -75px;
   border-radius: 50%;
   border: 3px solid transparent;
-  border-top-color: #9370DB;
+  border-top-color: #9370db;
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;
 }
+
 #loader:before {
   content: "";
   position: absolute;
@@ -141,10 +143,11 @@ code {
   bottom: 5px;
   border-radius: 50%;
   border: 3px solid transparent;
-  border-top-color: #BA55D3;
+  border-top-color: #ba55d3;
   -webkit-animation: spin 3s linear infinite;
   animation: spin 3s linear infinite;
 }
+
 #loader:after {
   content: "";
   position: absolute;
@@ -154,31 +157,33 @@ code {
   bottom: 15px;
   border-radius: 50%;
   border: 3px solid transparent;
-  border-top-color: #FF00FF;
+  border-top-color: #ff00ff;
   -webkit-animation: spin 1.5s linear infinite;
   animation: spin 1.5s linear infinite;
 }
+
 @-webkit-keyframes spin {
-  0%   {
-      -webkit-transform: rotate(0deg);
-      -ms-transform: rotate(0deg);
-      transform: rotate(0deg);
+  0% {
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
   }
   100% {
-      -webkit-transform: rotate(360deg);
-      -ms-transform: rotate(360deg);
-      transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
+
 @keyframes spin {
-  0%   {
-      -webkit-transform: rotate(0deg);
-      -ms-transform: rotate(0deg);
-      transform: rotate(0deg);
+  0% {
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
   }
   100% {
-      -webkit-transform: rotate(360deg);
-      -ms-transform: rotate(360deg);
-      transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
